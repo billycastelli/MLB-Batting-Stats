@@ -73,6 +73,11 @@ def parse_source(source):
     for line in file:
         if 'Batting Record' in line:
             on = 1
+        if 'Total NL' in line:
+            line = ''
+        if 'Total AL' in line:
+            line = ''
+
         if 'Total    (' in line:
             line = re.sub(r'([T][o][t][a][l][ ]{4})','Total',line)
             line = re.sub(r'([S][p][l][i][t][s])','',line.strip())
@@ -81,13 +86,8 @@ def parse_source(source):
 
             file.close()
             return
-        if on:
+        if on and len(line)>0:
             line = re.sub(r'([D][a][i][l][y][ ][S][p][l][i][t][s])|([ ]{12})|([ ][S][p][l][i][t][s])','',line.strip())
             print(line)
 
-            
-
-
-
-
-    
+           
