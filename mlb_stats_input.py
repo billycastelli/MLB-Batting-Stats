@@ -1,9 +1,7 @@
 #### MLB Stats
-
-#Stats provided by www.retrosheet.org
+#### Stats provided by www.retrosheet.org
 
 import MLB_stats_builder as mlbb
-
 
 def inputName():
     name = input('Enter the name of an MLB player: ')
@@ -20,7 +18,6 @@ def get_stats():
     player_url = mlbb.get_player_url(player,last_name_source)
     #print(mlbb.get_source(player_url))
     stats = mlbb.parse_source(mlbb.get_source(player_url))
-
 
 if __name__ == "__main__":
     while True:
