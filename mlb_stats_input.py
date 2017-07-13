@@ -1,5 +1,7 @@
 #### MLB Stats
-#### Stats provided by www.retrosheet.org
+#      The information used here was obtained free of
+#     charge from and is copyrighted by Retrosheet.  Interested
+#     parties may contact Retrosheet at "www.retrosheet.org".
 
 import MLB_stats_builder as mlbb
 
