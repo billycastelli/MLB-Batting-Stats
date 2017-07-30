@@ -3,22 +3,16 @@
 #     charge from and is copyrighted by Retrosheet.  Interested
 #     parties may contact Retrosheet at "www.retrosheet.org".
 
-
 import json
 import urllib.parse
 import urllib.request
 import requests
 import re
 
-
 BASE_URL = 'http://www.retrosheet.org/boxesetc/'
-
 
 class InvalidPlayerError(Exception):
     pass
-
-
-
 
 def last_name_url(player:str):
     player = player.split()
@@ -28,29 +22,30 @@ def last_name_url(player:str):
     #print(first2)
     return BASE_URL + 'MISC/PLD_' + first2 + '.htm'
 
+def proper_name(player):
+    pList = player.split()
+    string = ''
+    for x in pList:
+        string += x[0].upper() + x[1:] + ' ' 
+    return string
 
 def get_source(url: str)->dict:
     response = None
-
     try:
         response = urllib.request.urlopen(url)
         json_text = response.read().decode(encoding = 'utf-8')
         return json_text
     except:
         raise InvalidPlayerError
-
     finally:
         if response != None:
             response.close()
-
 
 def check_if_player(player:str,source:str):
     if player.lower() not in source.lower():
         raise InvalidPlayerError
     else:
         print('Player found')
-
-
 
 def get_player_url(player:str,source:str):
     check_if_player(player,source)
@@ -60,19 +55,17 @@ def get_player_url(player:str,source:str):
             addThis = line[13:28]
             return BASE_URL + addThis
 
-
-
 def parse_source(source):
     #use re to get rid of all html tags
     print()
     on = 0
-
     cleanSource = re.sub('<[^>]*>','',source)
 
     file = open("Stats.txt", 'w')
     file.write(cleanSource)
     file = open("Stats.txt", 'r')
 
+    stats = []
     for line in file:
         if 'Batting Record' in line:
             on = 1
@@ -80,17 +73,18 @@ def parse_source(source):
             line = ''
         if 'Total AL' in line:
             line = ''
-
         if 'Total    (' in line:
             line = re.sub(r'([T][o][t][a][l][ ]{4})','Total',line)
             line = re.sub(r'([S][p][l][i][t][s])','',line.strip())
             line = re.sub(r'([Y][e][a][r][s])','yrs',line.strip())
-            print(line)
-
+            stats.append(line)
+            
             file.close()
-            return
+            return stats
+
+        if 'Fielding' in line:
+            file.close()
+            return stats
         if on and len(line)>0:
             line = re.sub(r'([D][a][i][l][y][ ][S][p][l][i][t][s])|([ ]{12})|([ ][S][p][l][i][t][s])','',line.strip())
-            print(line)
-
-           
+            stats.append(line)
